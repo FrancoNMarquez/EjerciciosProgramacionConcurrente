@@ -41,7 +41,7 @@ public class Almacen {
         //agregar la caja adentro del array de cajas
         int i = 0;
         boolean espacioEncontrado = false;
-        while(i<MAX_CAJAS || !espacioEncontrado){
+        while(i<MAX_CAJAS && !espacioEncontrado){
             if(arregloDeCajas[i]==null){
                 arregloDeCajas[i]=laCaja;
                 espacioEncontrado = true;
