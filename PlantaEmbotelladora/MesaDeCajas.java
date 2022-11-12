@@ -14,7 +14,6 @@ public class MesaDeCajas {
     Condition estaLaCajaDeAgua = lock.newCondition();
     boolean cajaEstaLLena = false;
     Condition cajaLlena = lock.newCondition();
-
     public MesaDeCajas() {
         for (int i = 0; i <2 ; i++) {
             arregloCajas[i]= new Caja((short)i);
@@ -43,22 +42,29 @@ public class MesaDeCajas {
     public Caja sacarCaja() throws InterruptedException {
         //pide lock, saca la instancia actual de caja, pone otra caja, unlock
         //sin whiles, solo accede el empaquetador?
+        lock.lock();
         Caja devolverCaja = null;
         int lenArregloCajas = arregloCajas.length;
-        lock.lock();
-        while (!cajaEstaLLena){
+
+        while (!arregloCajas[0].estaLlena() && !arregloCajas[1].estaLlena()){
             System.out.println("Esperando para sacar caja");
             cajaLlena.await();
         }
         //Saber que tipo de caja hay que sacar y poner esa pos del arreglo en null
         for (int i = 0; i <lenArregloCajas  ; i++) {
             if(arregloCajas[i].estaLlena()){
+                if(i==0){
+                    hayCajaVino=false;
+                }else{
+                    hayCajaAgua=false;
+                }
                 devolverCaja = arregloCajas[i];
                 System.out.println("Saque caja de tipo " +i);
             }
         }
-
+        System.out.println("llegue aca");
         lock.unlock();
+
         return devolverCaja;
     }
     public void ponerBotella(short tipo) throws InterruptedException {
@@ -72,25 +78,34 @@ public class MesaDeCajas {
                 System.out.println("NO HAY CAJA DE VINO");
                 estaLaCajaDeVino.await();
             }
-            //Despues reveer si pregunto antes o despues de poner la botella
-            arregloCajas[0].agregarBotella();
+
             if(arregloCajas[0].estaLlena()){
+                System.out.println("Despierto al empaquetador");
+                cajaEstaLLena = true;
                 cajaLlena.signal();}
+            while(arregloCajas[0].estaLlena()){
+                estaLaCajaDeVino.await();
+            }
+            arregloCajas[0].agregarBotella();
             System.out.println("---AGREGUE BOTELLA DE VINO---");
         }else{
             while(!hayCajaAgua){
                 System.out.println("NO HAY CAJA DE AGUA");
                 estaLaCajaDeAgua.await();
             }
-            arregloCajas[1].agregarBotella();
             if(arregloCajas[1].estaLlena()){
                 cajaLlena.signal();
             }
+            while(arregloCajas[1].estaLlena()){
+                estaLaCajaDeAgua.await();
+            }
+            arregloCajas[1].agregarBotella();
+
             System.out.println("---AGREGUE BOTELLA DE AGUA---");
-            lock.unlock();
+
             //aca le tiene que avisar el empaquetador de que ya hay una caja nueva
         }
-
+        lock.unlock();
     }
 
 }

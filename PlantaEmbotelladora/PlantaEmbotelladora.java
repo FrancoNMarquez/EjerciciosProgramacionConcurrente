@@ -9,8 +9,13 @@ public class PlantaEmbotelladora {
         Thread[] arrHilos = new Thread[cantEmbotelladores];
         Thread hiloEmpaquetador = new Thread(empaquetador);
 
-        for (int i = 0; i < cantEmbotelladores-1; i++) {
-            arrEmbotelladores[i] = new Embotellador(laMesa);
+        for (int i = 0; i < cantEmbotelladores; i++) {
+            if(i%2!=0){
+                arrEmbotelladores[i] = new Embotellador(laMesa,(short)1);
+            }else{
+                arrEmbotelladores[i] = new Embotellador(laMesa,(short)0);
+            }
+
             arrHilos[i] = new Thread(arrEmbotelladores[i]);
             arrHilos[i].start();
         }
