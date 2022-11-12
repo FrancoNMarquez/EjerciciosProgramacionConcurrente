@@ -39,7 +39,15 @@ public class Almacen {
     }
     public void agregarCaja(Caja laCaja){
         //agregar la caja adentro del array de cajas
-
+        int i = 0;
+        boolean espacioEncontrado = false;
+        while(i<MAX_CAJAS && !espacioEncontrado){
+            if(arregloDeCajas[i]==null){
+                arregloDeCajas[i]=laCaja;
+                espacioEncontrado = true;
+            }
+            i++;
+        }
     }
     public void sacarCaja() throws InterruptedException {
         lock.lock();
@@ -55,7 +63,7 @@ public class Almacen {
         lock.unlock();
     }
     public void vaciarCajas(){
-        for (int i = 0; i <=MAX_CAJAS ; i++) {
+        for (int i = 0; i <MAX_CAJAS ; i++) {
             arregloDeCajas[i]=null;
         }
     }

@@ -1,5 +1,5 @@
 package PlantaEmbotelladora;
-import org.jetbrains.annotations.NotNull;
+//import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -21,7 +21,7 @@ public class MesaDeCajas {
         }
     }
 
-    public void ponerCaja(@NotNull Caja unaCaja){
+    public void ponerCaja(Caja unaCaja){
         //el empaquetador pone una caja, si es que no hay ninguna.
         lock.lock();
 
