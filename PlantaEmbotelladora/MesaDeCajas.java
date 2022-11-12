@@ -1,5 +1,5 @@
 package PlantaEmbotelladora;
-//import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -21,17 +21,17 @@ public class MesaDeCajas {
         }
     }
 
-    public void ponerCaja(Caja unaCaja){
+    public void ponerCaja(@NotNull Caja unaCaja){
         //el empaquetador pone una caja, si es que no hay ninguna.
         lock.lock();
 
         if(unaCaja.getTipo()==0){
-            System.out.println("Estoy poniendo una caja de Vino...");
+           // System.out.println("Estoy poniendo una caja de Vino...");
             arregloCajas[0]=unaCaja;
             hayCajaVino=true;
             estaLaCajaDeVino.signalAll();
         }else{
-            System.out.println("Estoy poniendo una caja de Agua...");
+           // System.out.println("Estoy poniendo una caja de Agua...");
             arregloCajas[1]=unaCaja;
             hayCajaAgua=true;
             estaLaCajaDeAgua.signalAll();
@@ -47,7 +47,7 @@ public class MesaDeCajas {
         int lenArregloCajas = arregloCajas.length;
 
         while (!arregloCajas[0].estaLlena() && !arregloCajas[1].estaLlena()){
-            System.out.println("Esperando para sacar caja");
+           // System.out.println("Esperando para sacar caja");
             cajaLlena.await();
         }
         //Saber que tipo de caja hay que sacar y poner esa pos del arreglo en null
@@ -59,10 +59,10 @@ public class MesaDeCajas {
                     hayCajaAgua=false;
                 }
                 devolverCaja = arregloCajas[i];
-                System.out.println("Saque caja de tipo " +i);
+               // System.out.println("Saque caja de tipo " +i);
             }
         }
-        System.out.println("llegue aca");
+
         lock.unlock();
 
         return devolverCaja;
@@ -75,22 +75,22 @@ public class MesaDeCajas {
         lock.lock();
         if(tipo==0){
             while (!hayCajaVino) {
-                System.out.println("NO HAY CAJA DE VINO");
+               // System.out.println("NO HAY CAJA DE VINO");
                 estaLaCajaDeVino.await();
             }
 
             if(arregloCajas[0].estaLlena()){
-                System.out.println("Despierto al empaquetador");
+               // System.out.println("Despierto al empaquetador");
                 cajaEstaLLena = true;
                 cajaLlena.signal();}
             while(arregloCajas[0].estaLlena()){
                 estaLaCajaDeVino.await();
             }
             arregloCajas[0].agregarBotella();
-            System.out.println("---AGREGUE BOTELLA DE VINO---");
+          //  System.out.println("---AGREGUE BOTELLA DE VINO---");
         }else{
             while(!hayCajaAgua){
-                System.out.println("NO HAY CAJA DE AGUA");
+               // System.out.println("NO HAY CAJA DE AGUA");
                 estaLaCajaDeAgua.await();
             }
             if(arregloCajas[1].estaLlena()){
@@ -101,7 +101,7 @@ public class MesaDeCajas {
             }
             arregloCajas[1].agregarBotella();
 
-            System.out.println("---AGREGUE BOTELLA DE AGUA---");
+            //System.out.println("---AGREGUE BOTELLA DE AGUA---");
 
             //aca le tiene que avisar el empaquetador de que ya hay una caja nueva
         }

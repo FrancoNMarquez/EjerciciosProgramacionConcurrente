@@ -1,4 +1,5 @@
 package PlantaEmbotelladora;
+import javax.sound.midi.Soundbank;
 import java.security.PublicKey;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -28,13 +29,14 @@ public class Almacen {
         }
 
         if(this.estaLleno()){
+
             camionEspera.signal();
         }
         while(this.estaLleno()){
             empEspera.await();
         }
         this.agregarCaja(laCaja);
-
+        cantCajas++;
         lock.unlock();
     }
     public void agregarCaja(Caja laCaja){
@@ -53,18 +55,20 @@ public class Almacen {
         lock.lock();
 
         while(!this.estaLleno()){
+
             camionEspera.await();
         }
+        retirandoCajas=true;
         this.vaciarCajas();
+        retirandoCajas=false;
         empEspera.signal();
         lock.unlock();
 
-
-        lock.unlock();
     }
     public void vaciarCajas(){
         for (int i = 0; i <MAX_CAJAS ; i++) {
             arregloDeCajas[i]=null;
         }
+        cantCajas=0;
     }
 }

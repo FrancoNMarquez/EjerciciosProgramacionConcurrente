@@ -11,6 +11,7 @@ public class Camion implements Runnable{
         while(true){
             try {
                 unAlmacen.sacarCaja();
+                Thread.sleep(1000);
                 System.out.println("--EL CAMION SE LLEVO LAS CAJAS--");
             } catch (Exception e) {
                 // TODO: handle exception
