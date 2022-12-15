@@ -1,10 +1,28 @@
 package Trenes;
 
 public class MainTrenes {
+
+    // Arreglar prints
+
     public static void main(String[] args) {
-        Pasajero[] arrayPasajeros = new Pasajero[50];
-        VendedorTicket unVendedor = new VendedorTicket();
-        ControlTren controlTren = new ControlTren();
+
+        Tren tren = new Tren(5);
+
+        Thread[] pasajeros = new Thread[10];
+        Thread vendedor = new Thread(new VendedorTicket(tren), "VendedorTickets ");
+        Thread control = new Thread(new ControlTren(tren));
+
+        for (int i = 0; i < pasajeros.length; i++) {
+            pasajeros[i] = new Thread(new Pasajero(tren), "Pasajero " + (i + 1));
+        }
+
+        control.start();
+        vendedor.start();
+
+        for (int i = 0; i < pasajeros.length; i++) {
+            pasajeros[i].start();
+        }
 
     }
+
 }
